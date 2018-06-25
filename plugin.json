@@ -1,0 +1,13 @@
+{
+  "plugin": {
+    "name": "Intel 8086 Bookmarks",
+    "version": "0.1",
+    "author": "whitequark",
+    "type": ["arch"],
+    "api": "python2",
+    "description": "A plugin providing the 16-bit Intel architecture.",
+    "license": {
+      "name": "BSD-0-clause"
+    }
+  }
+}
