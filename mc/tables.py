@@ -1,7 +1,7 @@
 from binaryninja.enums import LowLevelILFlagCondition
 
 
-__all__  = ['reg8', 'reg16', 'reg_seg', 'regs_rm']
+__all__  = ['reg8', 'reg16', 'reg_seg', 'regs_rm', 'flags_bits']
 __all__ += ['op_width']
 __all__ += ['instr_alu_logic', 'instr_alu_arith', 'instr_alu_shift',
             'instr_jump', 'jump_cond', 'instr_loop']
@@ -47,6 +47,17 @@ regs_rm = {
     0b110: ['bp'],
     0b111: ['bx']
 }
+
+flags_bits = [
+    ('c', 0),
+    ('p', 2),
+    ('a', 4),
+    ('z', 6),
+    ('s', 7),
+    ('i', 9),
+    ('d', 10),
+    ('o', 11),
+]
 
 
 # Operator tables

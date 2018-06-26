@@ -1,3 +1,5 @@
+from binaryninja.lowlevelil import LLIL_TEMP
+
 from ..helpers import *
 from ..tables import *
 from . import *
@@ -5,7 +7,8 @@ from . import *
 
 __all__ = ['PushReg', 'PopReg',
            'PushSeg', 'PopSeg',
-           'PushRM',  'PopRM']
+           'PushRM',  'PopRM',
+           'PushF',   'PopF']
 
 
 class PushPopReg(Instruction):
@@ -80,3 +83,30 @@ class PopRM(InstrHasModRegRM, Instr16Bit, Instruction):
             return
 
         il.append(il.push(2, self._lift_reg_mem(il)))
+
+
+class PushF(Instruction):
+    def name(self):
+        return 'pushf'
+
+    def lift(self, il, addr):
+        flags = None
+        for flag, flag_bit in flags_bits:
+            bit = il.flag_bit(2, flag, flag_bit)
+            if flags is None:
+                flags = bit
+            else:
+                flags = il.or_expr(2, bit, flags)
+        il.append(il.push(2, flags))
+
+
+class PopF(Instruction):
+    def name(self):
+        return 'popf'
+
+    def lift(self, il, addr):
+        flags = LLIL_TEMP(il.temp_reg_count)
+        il.append(il.set_reg(2, flags, il.pop(2)))
+        for flag, flag_bit in flags_bits:
+            bit = il.test_bit(2, il.reg(2, flags), il.const(2, flag_bit))
+            il.append(il.set_flag(flag, bit))

@@ -58,10 +58,10 @@ class Intel8086(Architecture):
         'a': FlagRole.HalfCarryFlagRole,
         'z': FlagRole.ZeroFlagRole,
         's': FlagRole.NegativeSignFlagRole,
-        'o': FlagRole.OverflowFlagRole,
+        't': FlagRole.SpecialFlagRole,
         'i': FlagRole.SpecialFlagRole,
         'd': FlagRole.SpecialFlagRole,
-        't': FlagRole.SpecialFlagRole,
+        'o': FlagRole.OverflowFlagRole,
     }
     flag_write_types = [
         '',
