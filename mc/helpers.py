@@ -3,7 +3,7 @@ from binaryninja.enums import InstructionTextTokenType
 
 
 __all__  = ['fmt_dec', 'fmt_dec_sign',
-            'fmtHex', 'fmt_hex2', 'fmt_hex4', 'fmt_hexW', 'fmt_hex_sign']
+            'fmt_hex', 'fmt_hex2', 'fmt_hex4', 'fmt_hexW', 'fmt_hex_sign']
 __all__ += ['fmt_imm', 'fmt_imm_sign', 'fmt_disp', 'fmt_code_rel', 'fmt_code_abs']
 __all__ += ['token', 'asm']
 
@@ -14,7 +14,7 @@ def fmt_dec(value):
 def fmt_dec_sign(value):
     return "{:+d}".format(value)
 
-def fmtHex(value):
+def fmt_hex(value):
     return "{:#x}".format(value)
 
 def fmt_hex2(value):
@@ -38,7 +38,7 @@ def fmt_imm(value):
     if value < 256:
         return fmt_dec(value)
     else:
-        return fmtHex(value)
+        return fmt_hex(value)
 
 def fmt_imm_sign(value):
     if abs(value) < 256:
@@ -47,7 +47,7 @@ def fmt_imm_sign(value):
         return fmt_hex_sign(value)
 
 def fmt_disp(value):
-    return fmtHex(value)
+    return fmt_hex(value)
 
 def fmt_code_abs(value):
     return fmt_hex4(value)

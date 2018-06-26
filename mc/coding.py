@@ -54,9 +54,9 @@ class Decoder:
         if width == 0:
             return 0
         elif width == 1:
-            return self.signed_byte() & 0xffff
+            return self.signed_byte()
         elif width == 2:
-            return self.unsigned_word()
+            return self.signed_word()
         else:
             raise ValueError("invalid displacement width {}".format(width))
 
@@ -94,9 +94,9 @@ class Encoder:
         if width == 0:
             pass
         elif width == 1:
-            self.unsigned_byte(value & 0xff)
+            self.signed_byte(value)
         elif width == 2:
-            self.unsigned_word(value)
+            self.signed_word(value)
         else:
             raise ValueError("invalid displacement width {}".format(width))
 
