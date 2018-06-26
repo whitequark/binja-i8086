@@ -1,6 +1,3 @@
-__all__ = []
-
-
 from .instr import Instruction
 from .instr.seg import *
 from .instr.alu import *
@@ -10,6 +7,8 @@ from .instr.test import *
 from .instr.mov import *
 from .instr.lea import *
 from .instr.push_pop import *
+from .instr.rep import *
+from .instr.str import *
 from .instr.jmp import *
 from .instr.call import *
 from .instr.ret import *
@@ -17,6 +16,9 @@ from .instr.int import *
 from .instr.cl_st import *
 from .instr.in_out import *
 from .instr.bad import *
+
+
+__all__ = []
 
 
 Instruction.opcodes.update({
@@ -184,18 +186,18 @@ Instruction.opcodes.update({
     0xa1: MovAccMem,
     0xa2: MovMemAcc,
     0xa3: MovMemAcc,
-    # 0xa4: Movs,
-    # 0xa5: Movs,
-    # 0xa6: Cmps,
-    # 0xa7: Cmps,
+    0xa4: Movs,
+    0xa5: Movs,
+    0xa6: Cmps,
+    0xa7: Cmps,
     0xa8: TestAccImm,
     0xa9: TestAccImm,
-    # 0xaa: Stos,
-    # 0xab: Stos,
-    # 0xac: Lods,
-    # 0xad: Lods,
-    # 0xae: Scas,
-    # 0xaf: Scas,
+    0xaa: Stos,
+    0xab: Stos,
+    0xac: Lods,
+    0xad: Lods,
+    0xae: Scas,
+    0xaf: Scas,
     0xb0: MovRegImm,
     0xb1: MovRegImm,
     0xb2: MovRegImm,
@@ -223,7 +225,7 @@ Instruction.opcodes.update({
     0xc8: Unassigned,
     0xc9: Unassigned,
     # 0xca: RetFarImm,
-    # 0xcb: RetImm,
+    # 0xcb: RetFar,
     0xcc: Int3,
     0xcd: IntImm,
     # 0xce: Into,
@@ -262,8 +264,8 @@ Instruction.opcodes.update({
     0xef: OutReg,
     # 0xf0: Lock,
     0xf1: Unassigned,
-    # 0xf2: Repne,
-    # 0xf3: Rep,
+    0xf2: Repne,
+    0xf3: Repe,
     # 0xf4: Hlt,
     0xf5: Cmc,
     0xf6: {

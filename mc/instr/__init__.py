@@ -50,6 +50,14 @@ class Instruction(object):
     def lift(self, il, addr):
         il.append(il.unimplemented())
 
+    def _lift_addr(self, il, seg, disp):
+        if seg in il.arch.regs:
+            seg = il.reg(2, seg)
+        if disp in il.arch.regs:
+            disp = il.reg(2, disp)
+        base = il.shift_left(3, seg, il.const(1, 4))
+        return il.add(3, base, disp)
+
 
 class Prefix(Instruction):
     def decode(self, decoder, addr):
@@ -137,10 +145,10 @@ class InstrHasDisp(InstrHasSegment):
             ('beginMem', '[')
         )
         if self.segment() != self.default_segment:
-            tokens = [
+            tokens += asm(
                 ('reg', self.segment()),
                 ('opsep', ':')
-            ] + tokens
+            )
         tokens += asm(
             ('addr', fmt_disp(self.disp), self.disp),
             ('endMem', ']'),
@@ -149,8 +157,8 @@ class InstrHasDisp(InstrHasSegment):
 
     def _lift_mem(self, il, store=None):
         w = self.width()
-        eff_addr = il.const(2, self.disp)
-        phys_addr = il.add(3, il.shift_left(3, il.reg(2, self.segment()), il.const(1, 4)), eff_addr)
+        phys_addr = il.add(3, il.shift_left(3, il.reg(2, self.segment()), il.const(1, 4)),
+                           il.const(2, self.disp))
         if a20_gate:
             phys_addr = il.and_expr(3, il.const(3, 0xfffff), phys_addr)
         if store is None:

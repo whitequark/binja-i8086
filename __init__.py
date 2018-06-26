@@ -1,6 +1,7 @@
 from binaryninja import log, Architecture, RegisterInfo, IntrinsicInfo, InstructionInfo
 from binaryninja.enums import Endianness, FlagRole, LowLevelILFlagCondition
 from binaryninja.types import Type
+
 from . import mc
 
 
