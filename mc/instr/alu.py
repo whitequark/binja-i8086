@@ -208,17 +208,14 @@ class AluArithRegMem(InstrHasModRegRM, InstrHasWidth, Instruction):
 
     def lift(self, il, addr):
         w = self.width()
-        arg = self._lift_reg_mem(il)
-
         name = self.name()
-        # if name == 'not':
-        # elif name == 'neg':
+        if name == 'not':
+            il.append(self._lift_reg_mem(il, store=il.not_expr(w, self._lift_reg_mem(il))))
+        elif name == 'neg':
+            il.append(self._lift_reg_mem(il, store=il.neg_expr(w, self._lift_reg_mem(il))))
         # elif name == 'mul':
         # elif name =='imul':
         # elif name == 'div':
         # elif name == 'idiv':
-        if False:
-            pass
         else:
             il.append(il.undefined())
-            return
