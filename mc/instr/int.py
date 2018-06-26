@@ -1,27 +1,18 @@
 from binaryninja.enums import BranchType
+from binaryninja.lowlevelil import LowLevelILLabel
 
 from ..helpers import *
 from ..tables import *
 from . import *
 
 
-__all__ = ['Int3', 'IntImm']
+__all__ = ['IntImm', 'Int3', 'Into']
 
 
 class Int(Instruction):
-    def name(self):
-        return 'int'
-
     def analyze(self, info, addr):
         Instruction.analyze(self, info, addr)
         info.add_branch(BranchType.SystemCall, 4 * self.number)
-
-    def render(self, addr):
-        tokens = Instruction.render(self, addr)
-        tokens += asm(
-            ('int', fmt_dec(self.number), self.number)
-        )
-        return tokens
 
     def lift(self, il, addr):
         if self.number == 3:
@@ -36,11 +27,10 @@ class Int(Instruction):
             il.append(il.call(self._lift_phys_addr(il, cs, ip)))
 
 
-class Int3(Int):
-    number = 3
-
-
 class IntImm(Int):
+    def name(self):
+        return 'int'
+
     def length(self):
         return 2
 
@@ -51,3 +41,32 @@ class IntImm(Int):
     def encode(self, encoder, addr):
         Int.encode(self, encoder, addr)
         encoder.unsigned_byte(self.number)
+
+    def render(self, addr):
+        tokens = Instruction.render(self, addr)
+        tokens += asm(
+            ('int', fmt_dec(self.number), self.number)
+        )
+        return tokens
+
+
+class Int3(Int):
+    number = 3
+
+    def name(self):
+        return 'int3'
+
+
+class Into(Int):
+    number = 4
+
+    def name(self):
+        return 'into'
+
+    def lift(self, il, addr):
+        overflow_label = LowLevelILLabel()
+        normal_label   = LowLevelILLabel()
+        il.append(il.if_expr(il.flag('o'), overflow_label, normal_label))
+        il.mark_label(overflow_label)
+        Int.lift(self, il, addr)
+        il.mark_label(normal_label)

@@ -230,7 +230,7 @@ Instruction.opcodes.update({
     0xcb: RetFar,
     0xcc: Int3,
     0xcd: IntImm,
-    # 0xce: Into,
+    0xce: Into,
     # 0xcf: Iret,
     0xd0: AluShiftRM,
     0xd1: AluShiftRM,
