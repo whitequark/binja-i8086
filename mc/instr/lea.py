@@ -6,7 +6,7 @@ from . import *
 __all__ = ['Lea']
 
 
-class Lea(InstrHasModRM, Instr16Bit, Instruction):
+class Lea(InstrHasModRegRM, Instr16Bit, Instruction):
     default_segment = 'ds'
 
     def name(self):

@@ -11,7 +11,7 @@ class Unassigned(Instruction):
         return '(unassigned)'
 
 
-class UnassignedRM(InstrHasModRM, Instruction):
+class UnassignedRM(InstrHasModRegRM, Instruction):
     def length(self):
         return 2
 

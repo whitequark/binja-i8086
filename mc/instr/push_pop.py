@@ -49,7 +49,7 @@ class PopSeg(PushPopSeg, PopReg):
     pass
 
 
-class PushRM(InstrHasModRM, Instr16Bit, Instruction):
+class PushRM(InstrHasModRegRM, Instr16Bit, Instruction):
     default_segment = 'ds'
 
     def name(self):
@@ -64,7 +64,7 @@ class PushRM(InstrHasModRM, Instr16Bit, Instruction):
         il.append(il.push(2, self._lift_reg_mem(il)))
 
 
-class PopRM(InstrHasModRM, Instr16Bit, Instruction):
+class PopRM(InstrHasModRegRM, Instr16Bit, Instruction):
     default_segment = 'ds'
 
     def name(self):

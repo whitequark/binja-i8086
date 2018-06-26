@@ -52,7 +52,7 @@ class JmpFarImm(Jmp):
         il.append(il.jump(il.const(3, self.target())))
 
 
-class JmpFarMem(InstrHasModRM, Instr16Bit, Jmp):
+class JmpFarMem(InstrHasModRegRM, Instr16Bit, Jmp):
     def analyze(self, info, addr):
         Jmp.analyze(self, info, addr)
         info.add_branch(BranchType.IndirectBranch)
@@ -108,7 +108,7 @@ class JmpNearImm(Jmp):
             il.append(il.goto(label))
 
 
-class JmpNearRM(InstrHasModRM, Instr16Bit, Jmp):
+class JmpNearRM(InstrHasModRegRM, Instr16Bit, Jmp):
     def analyze(self, info, addr):
         Jmp.analyze(self, info, addr)
         info.add_branch(BranchType.IndirectBranch)

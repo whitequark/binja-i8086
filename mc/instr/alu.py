@@ -35,7 +35,7 @@ class AluLogic(InstrHasWidth, Instruction):
         return result
 
 
-class AluLogicRegRM(InstrHasModRM, AluLogic):
+class AluLogicRegRM(InstrHasModRegRM, AluLogic):
     def dst_reg(self):
         return self._reg()
 
@@ -75,7 +75,7 @@ class AluLogicAccImm(InstrHasImm, AluLogic):
             il.append(il.set_reg(w, self.dst_reg(), result))
 
 
-class AluLogicRMImm(InstrHasModRM, AluLogic):
+class AluLogicRMImm(InstrHasModRegRM, AluLogic):
     def name(self):
         return instr_alu_logic[self._reg_bits()]
 
@@ -89,14 +89,14 @@ class AluLogicRMImm(InstrHasModRM, AluLogic):
             return 1
 
     def length(self):
-        return InstrHasModRM.length(self) + self._imm_width()
+        return InstrHasModRegRM.length(self) + self._imm_width()
 
     def decode(self, decoder, addr):
-        InstrHasModRM.decode(self, decoder, addr)
+        InstrHasModRegRM.decode(self, decoder, addr)
         self.imm = decoder.immediate(self._imm_width())
 
     def encode(self, encoder, addr):
-        InstrHasModRM.encode(self, encoder, addr)
+        InstrHasModRegRM.encode(self, encoder, addr)
         encoder.immediate(self.imm, self._imm_width())
 
     def render(self, addr):
@@ -127,7 +127,7 @@ class AluLogicRMImm(InstrHasModRM, AluLogic):
             il.append(self._lift_reg_mem(il, store=result))
 
 
-class AluShiftRM(InstrHasModRM, InstrHasWidth, Instruction):
+class AluShiftRM(InstrHasModRegRM, InstrHasWidth, Instruction):
     default_segment = 'ds'
 
     def name(self):
@@ -180,7 +180,7 @@ class AluShiftRM(InstrHasModRM, InstrHasWidth, Instruction):
         il.append(self._lift_reg_mem(il, store=result))
 
 
-class AluArithRegMem(InstrHasModRM, InstrHasWidth, Instruction):
+class AluArithRegMem(InstrHasModRegRM, InstrHasWidth, Instruction):
     default_segment = 'ds'
 
     def name(self):

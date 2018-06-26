@@ -29,7 +29,7 @@ class TestAccImm(InstrHasImm, InstrHasWidth, Test):
         il.append(il.and_expr(w, il.reg(w, self.reg()), il.const(w, self.imm), '*'))
 
 
-class TestRegMemImm(InstrHasImm, InstrHasModRM, InstrHasWidth, Test):
+class TestRegMemImm(InstrHasImm, InstrHasModRegRM, InstrHasWidth, Test):
     default_segment = 'ds'
 
     def render(self, addr):

@@ -35,7 +35,7 @@ class MovRegImm(InstrHasImm, InstrHasWidth, Mov):
         il.append(il.set_reg(w, self.dst_reg(), il.const(w, self.imm)))
 
 
-class MovMemImm(InstrHasImm, InstrHasModRM, InstrHasWidth, Mov):
+class MovMemImm(InstrHasImm, InstrHasModRegRM, InstrHasWidth, Mov):
     def render(self, addr):
         if self._reg_bits() != 0b000:
             return Mov.render(self) + asm(
@@ -55,7 +55,7 @@ class MovMemImm(InstrHasImm, InstrHasModRM, InstrHasWidth, Mov):
         il.append(self._lift_reg_mem(il, store=il.const(w, self.imm)))
 
 
-class MovRMReg(InstrHasModRM, InstrHasWidth, Mov):
+class MovRMReg(InstrHasModRegRM, InstrHasWidth, Mov):
     def src_reg(self):
         return self._reg()
 
@@ -73,7 +73,7 @@ class MovRMReg(InstrHasModRM, InstrHasWidth, Mov):
         il.append(self._lift_reg_mem(il, store=il.reg(w, self.src_reg())))
 
 
-class MovRegRM(InstrHasModRM, InstrHasWidth, Mov):
+class MovRegRM(InstrHasModRegRM, InstrHasWidth, Mov):
     def dst_reg(self):
         return self._reg()
 
@@ -140,7 +140,7 @@ class MovMemAcc(MovMem):
         il.append(self._lift_mem(il, store=il.reg(w, self.src_reg())))
 
 
-class MovRMSeg(InstrHasModRM, Instr16Bit, Mov):
+class MovRMSeg(InstrHasModRegRM, Instr16Bit, Mov):
     def src_reg(self):
         return reg_seg[self._reg_bits()]
 
@@ -164,7 +164,7 @@ class MovRMSeg(InstrHasModRM, Instr16Bit, Mov):
         il.append(self._lift_reg_mem(il, store=il.reg(2, self.src_reg())))
 
 
-class MovSegRM(InstrHasModRM, Instr16Bit, Mov):
+class MovSegRM(InstrHasModRegRM, Instr16Bit, Mov):
     def dst_reg(self):
         return reg_seg[self._reg_bits()]
 

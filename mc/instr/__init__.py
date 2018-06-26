@@ -5,7 +5,7 @@ from ..tables import *
 __all__ = ['Instruction', 'Prefix',
            'InstrHasWidth', 'Instr16Bit',
            'InstrHasImm',
-           'InstrHasSegment', 'InstrHasDisp', 'InstrHasModRM']
+           'InstrHasSegment', 'InstrHasDisp', 'InstrHasModRegRM']
 
 
 a20_gate = True
@@ -167,17 +167,17 @@ class InstrHasDisp(InstrHasSegment):
             return il.store(w, phys_addr, store)
 
 
-class InstrHasModRM(InstrHasSegment):
+class InstrHasModRegRM(InstrHasSegment):
     def length(self):
-        return super(InstrHasModRM, self).length() + 1 + self._disp_length()
+        return super(InstrHasModRegRM, self).length() + 1 + self._disp_length()
 
     def decode(self, decoder, addr):
-        super(InstrHasModRM, self).decode(decoder, addr)
+        super(InstrHasModRegRM, self).decode(decoder, addr)
         self._mod_reg_rm = decoder.unsigned_byte()
         self.disp = decoder.displacement(self._disp_length())
 
     def encode(self, encoder, addr):
-        super(InstrHasModRM, self).encode(encoder, addr)
+        super(InstrHasModRegRM, self).encode(encoder, addr)
         encoder.unsigned_byte(self._mod_reg_rm)
         encoder.displacement(self.disp, self._disp_length())
 

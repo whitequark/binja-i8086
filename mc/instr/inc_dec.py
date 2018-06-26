@@ -34,7 +34,7 @@ class IncDecReg(IncDec):
         il.append(il.set_reg(2, self.reg(), value))
 
 
-class IncDecRM(InstrHasModRM, InstrHasWidth, IncDec):
+class IncDecRM(InstrHasModRegRM, InstrHasWidth, IncDec):
     def name(self):
         if self._reg_bits() & 0b001:
             return 'dec'
