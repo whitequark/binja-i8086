@@ -184,7 +184,9 @@ class InstrHasModRegRM(InstrHasSegment):
         encoder.displacement(self.disp, self._disp_length())
 
     def _default_segment(self):
-        if self._mod_bits() != 0b11 and 'bp' in self._mem_regs():
+        if self._mod_bits() == 0b00 and self._reg_mem_bits() == 0b110:
+            return 'ds'
+        elif self._mod_bits() != 0b11 and 'bp' in self._mem_regs():
             return 'ss'
         else:
             return 'ds'
