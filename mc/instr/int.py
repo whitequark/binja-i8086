@@ -28,10 +28,10 @@ class Int(Instruction):
             il.append(il.breakpoint())
         else:
             # This *is* a trap, but if we lift it as a trap, BN assumes that execution
-            # will not continue afterwards. The system call expression doesn't take
-            # an argument. So, to aid analysis, we add an explicit call to the vector--
-            # not quite semantically correct, but good enough and useful.
-            # il.append(il.trap(self.number))
+            # will not continue afterwards. So, to aid analysis, we add an explicit call
+            # to the vector.
+            # Not quite semantically correct, but good enough and useful.
+            # TODO: represent this as a system call
             int_cs_ip = il.load(4, il.const_pointer(2, self.number * 4))
             int_cs    = il.logical_shift_right(2, int_cs_ip, il.const(1, 8))
             int_ip    = il.low_part(2, int_cs_ip)

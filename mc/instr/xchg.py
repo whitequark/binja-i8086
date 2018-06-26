@@ -36,6 +36,7 @@ class Xchg(Instruction):
         return tokens
 
     def lift(self, il, addr):
-        il.append(il.set_reg(2, LLIL_TEMP(0), il.reg(2, self.reg1())))
+        temp = LLIL_TEMP(il.temp_reg_count)
+        il.append(il.set_reg(2, temp, il.reg(2, self.reg1())))
         il.append(il.set_reg(2, self.reg1(), il.reg(2, self.reg2())))
-        il.append(il.set_reg(2, self.reg2(), il.reg(2, LLIL_TEMP(0))))
+        il.append(il.set_reg(2, self.reg2(), il.reg(2, temp)))
