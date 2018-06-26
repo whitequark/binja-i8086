@@ -174,7 +174,7 @@ Instruction.opcodes.update({
     0x97: Xchg,
     # 0x98: Cbw,
     # 0x99: Cwd,
-    # 0x9a: CallFarImm,
+    0x9a: CallFarImm,
     # 0x9b: Wait,
     # 0x9c: Pushf,
     # 0x9d: Popf,

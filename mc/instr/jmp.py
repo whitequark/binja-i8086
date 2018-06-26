@@ -50,7 +50,6 @@ class JmpFarImm(Jmp):
     def lift(self, il, addr):
         il.append(il.set_reg(2, 'cs', il.const(2, self.cs)))
         il.append(il.jump(il.const(3, self.target())))
-        il.add_label_for_address(il.arch, self.target())
 
 
 class JmpFarMem(InstrHasModRM, Instr16Bit, Jmp):
