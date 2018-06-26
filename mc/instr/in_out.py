@@ -1,3 +1,5 @@
+from binaryninja.lowlevelil import ILRegister, LLIL_TEMP
+
 from ..helpers import *
 from ..tables import *
 from . import *
@@ -46,7 +48,11 @@ class InImm(InstrHasWidth, InOutImm, In):
     def lift(self, il, addr):
         w = self.width()
         name = 'inw' if w == 2 else 'inb'
-        il.append(il.intrinsic([il.arch.regs[self.dst_reg()]], name, [il.const(2, self.imm)]))
+        # If assigning directly to ax, either the entire register needs to be assigned,
+        # or the SSA translation misidentifiers registers. Not sure why, BN bug?
+        temp = LLIL_TEMP(il.temp_reg_count)
+        il.append(il.intrinsic([ILRegister(il.arch, temp)], name, [il.const(2, self.imm)]))
+        il.append(il.set_reg(w, self.dst_reg(), il.reg(w, temp)))
 
 
 class InReg(InstrHasWidth, In):
@@ -62,7 +68,10 @@ class InReg(InstrHasWidth, In):
     def lift(self, il, addr):
         w = self.width()
         name = 'inw' if w == 2 else 'inb'
-        il.append(il.intrinsic([il.arch.regs[self.dst_reg()]], name, [il.reg(2, 'dx')]))
+        # See above.
+        temp = LLIL_TEMP(il.temp_reg_count)
+        il.append(il.intrinsic([ILRegister(il.arch, temp)], name, [il.reg(2, 'dx')]))
+        il.append(il.set_reg(w, self.dst_reg(), il.reg(w, temp)))
 
 
 class OutImm(InstrHasWidth, InOutImm, Out):

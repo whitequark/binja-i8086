@@ -94,7 +94,7 @@ class Intel8086(Architecture):
     intrinsics = {
         'outb': IntrinsicInfo([Type.int(2), Type.int(1)], []),
         'outw': IntrinsicInfo([Type.int(2), Type.int(2)], []),
-        'inb': IntrinsicInfo([Type.int(2)], [Type.int(1)]),
+        'inb': IntrinsicInfo([Type.int(1)], [Type.int(2)]),
         'inw': IntrinsicInfo([Type.int(2)], [Type.int(2)]),
     }
 
