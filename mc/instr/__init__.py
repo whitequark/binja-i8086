@@ -44,7 +44,7 @@ class Instruction(object):
     def render(self, addr):
         return asm(
             ('instr', self.name()),
-            ('opsep', ' ' * (6 - len(self.name())))
+            ('opsep', ' ' * (8 - len(self.name())))
         )
 
     def lift(self, il, addr):
