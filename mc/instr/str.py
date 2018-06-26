@@ -85,5 +85,5 @@ class Scas(InstrString):
 
     def lift(self, il, addr, df_values=None):
         w = self.width()
-        il.append(il.sub(w, 'ax', il.load(w, self._lift_addr(il, 'es', 'di')), '*'))
+        il.append(il.sub(w, il.reg(w, 'ax'), il.load(w, self._lift_addr(il, 'es', 'di')), '*'))
         self._lift_inc_dec(il, 'di', df_values)
