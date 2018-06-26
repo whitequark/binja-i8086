@@ -7,7 +7,8 @@ __all__ = ['MovRegImm', 'MovMemImm',
            'MovRMReg',  'MovRegRM',
            'MovAccMem', 'MovMemAcc',
            'MovRMSeg',  'MovSegRM',
-           'LSegRegRM']
+           'LSegRegRM',
+           'Xlat']
 
 
 class Mov(Instruction):
@@ -222,3 +223,13 @@ class LSegRegRM(InstrHasModRegRM, Instr16Bit, Instruction):
         seg, off = self._lift_load_far(il, self._lift_reg_mem(il))
         il.append(il.set_reg(2, self.seg_reg(), seg))
         il.append(il.set_reg(2, self.dst_reg(), off))
+
+
+class Xlat(InstrHasSegment, Instruction):
+    def name(self):
+        return 'xlat'
+
+    def lift(self, il, addr):
+        off  = il.add(2, il.reg(2, 'bx'), il.reg(1, 'al'))
+        phys = self._lift_phys_addr(il, self.segment(), off)
+        il.append(il.set_reg(1, 'al', il.load(1, phys)))

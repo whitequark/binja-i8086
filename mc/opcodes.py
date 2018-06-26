@@ -239,7 +239,7 @@ Instruction.opcodes.update({
     # 0xd4: Aam,
     # 0xd5: Aad,
     0xd6: Unassigned,
-    # 0xd7: Xlat,
+    0xd7: Xlat,
     0xd8: UnassignedRM,
     0xd9: UnassignedRM,
     0xda: UnassignedRM,
