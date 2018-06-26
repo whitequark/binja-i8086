@@ -1,3 +1,5 @@
+from binaryninja.lowlevelil import LLIL_TEMP
+
 from ..helpers import *
 from ..tables import *
 
@@ -50,7 +52,7 @@ class Instruction(object):
     def lift(self, il, addr):
         il.append(il.unimplemented())
 
-    def _lift_addr(self, il, seg, disp):
+    def _lift_phys_addr(self, il, seg, disp):
         if seg in il.arch.regs:
             seg = il.reg(2, seg)
         if disp in il.arch.regs:
@@ -60,6 +62,15 @@ class Instruction(object):
         if a20_gate:
             phys = il.and_expr(3, il.const(3, 0xfffff), phys)
         return phys
+
+    def _lift_load_cs_ip(self, il, addr):
+        cs_ip  = LLIL_TEMP(il.temp_reg_count)
+        il.append(il.set_reg(4, cs_ip, il.load(4, addr)))
+        cs     = LLIL_TEMP(il.temp_reg_count)
+        il.append(il.set_reg(2, cs, il.logical_shift_right(2, il.reg(4, cs_ip), il.const(1, 16))))
+        ip     = LLIL_TEMP(il.temp_reg_count)
+        il.append(il.set_reg(2, ip, il.low_part(2, il.reg(4, cs_ip))))
+        return il.reg(2, cs), il.reg(2, ip)
 
 
 class Prefix(Instruction):
@@ -162,7 +173,7 @@ class InstrHasDisp(InstrHasSegment):
 
     def _lift_mem(self, il, store=None):
         w = self.width()
-        phys = self._lift_addr(il, self.segment(), il.const(2, self.disp))
+        phys = self._lift_phys_addr(il, self.segment(), il.const(2, self.disp))
         if store is None:
             return il.load(w, phys)
         else:
@@ -271,7 +282,7 @@ class InstrHasModRegRM(InstrHasSegment):
             offset = reduce(lambda expr, reg: il.add(2, expr, reg), offsets)
         if only_calc_addr:
             return offset
-        phys = self._lift_addr(il, self.segment(), offset)
+        phys = self._lift_phys_addr(il, self.segment(), offset)
         if store is None:
             return il.load(self.width(), phys)
         else:

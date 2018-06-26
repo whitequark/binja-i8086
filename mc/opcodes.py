@@ -309,8 +309,8 @@ Instruction.opcodes.update({
     0xff: {
         0b000: IncDecRM,
         0b001: IncDecRM,
-        # 0b010: CallNearRM,
-        # 0b011: CallFarMem,
+        0b010: CallNearRM,
+        0b011: CallFarMem,
         0b100: JmpNearRM,
         0b101: JmpFarMem,
         0b110: PushRM,

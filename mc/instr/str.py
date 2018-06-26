@@ -47,8 +47,8 @@ class Movs(InstrHasSegment, InstrString):
 
     def lift(self, il, addr, df_values=None):
         w = self.width()
-        value = il.load(w, self._lift_addr(il, self.segment(), 'si'))
-        il.append(il.store(w, self._lift_addr(il, 'es', 'di'), value))
+        value = il.load(w, self._lift_phys_addr(il, self.segment(), 'si'))
+        il.append(il.store(w, self._lift_phys_addr(il, 'es', 'di'), value))
         self._lift_inc_dec(il, ('si', 'di'), df_values)
 
 
@@ -57,8 +57,8 @@ class Cmps(InstrHasSegment, InstrString):
 
     def lift(self, il, addr, df_values=None):
         w = self.width()
-        il.append(il.sub(w, il.load(w, self._lift_addr(il, self.segment(), 'si')),
-                            il.load(w, self._lift_addr(il, 'es', 'di')), '*'))
+        il.append(il.sub(w, il.load(w, self._lift_phys_addr(il, self.segment(), 'si')),
+                            il.load(w, self._lift_phys_addr(il, 'es', 'di')), '*'))
         self._lift_inc_dec(il, ('si', 'di'), df_values)
 
 
@@ -67,7 +67,7 @@ class Stos(InstrString):
 
     def lift(self, il, addr, df_values=None):
         w = self.width()
-        il.append(il.store(w, self._lift_addr(il, 'es', 'di'), il.reg(w, 'ax')))
+        il.append(il.store(w, self._lift_phys_addr(il, 'es', 'di'), il.reg(w, 'ax')))
         self._lift_inc_dec(il, 'di', df_values)
 
 
@@ -76,7 +76,7 @@ class Lods(InstrHasSegment, InstrString):
 
     def lift(self, il, addr, df_values=None):
         w = self.width()
-        il.append(il.set_reg(w, 'ax', il.load(w, self._lift_addr(il, self.segment(), 'si'))))
+        il.append(il.set_reg(w, 'ax', il.load(w, self._lift_phys_addr(il, self.segment(), 'si'))))
         self._lift_inc_dec(il, 'si', df_values)
 
 
@@ -85,5 +85,5 @@ class Scas(InstrString):
 
     def lift(self, il, addr, df_values=None):
         w = self.width()
-        il.append(il.sub(w, il.reg(w, 'ax'), il.load(w, self._lift_addr(il, 'es', 'di')), '*'))
+        il.append(il.sub(w, il.reg(w, 'ax'), il.load(w, self._lift_phys_addr(il, 'es', 'di')), '*'))
         self._lift_inc_dec(il, 'di', df_values)

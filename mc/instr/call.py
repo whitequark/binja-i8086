@@ -6,7 +6,7 @@ from ..tables import *
 from . import *
 
 
-__all__ = ['CallFarImm', 'CallNearImm']
+__all__ = ['CallFarImm', 'CallFarMem', 'CallNearImm', 'CallNearRM']
 
 
 class Call(Instruction):
@@ -57,6 +57,38 @@ class CallFarImm(Call):
         il.append(il.set_reg(2, 'cs', il.reg(2, temp)))
 
 
+class CallFarMem(InstrHasModRegRM, Instr16Bit, Call):
+    def analyze(self, info, addr):
+        Call.analyze(self, info, addr)
+        # FIXME: what should we do for indirect calls?
+        # info.add_branch(BranchType.CallDestination)
+
+    def render(self, addr):
+        if self._mod_bits() == 0b11:
+            return asm(('instr', '(unassigned)'))
+
+        tokens = Call.render(self, addr)
+        tokens += asm(
+            ('text', 'far'),
+            ('opsep', ' '),
+        )
+        tokens += self._render_reg_mem(fixed_width=True)
+        return tokens
+
+    def lift(self, il, addr):
+        if self._mod_bits() == 0b11:
+            il.append(il.undefined())
+            return
+
+        cs, ip = self._lift_load_cs_ip(il, self._lift_reg_mem(il))
+        il.append(il.set_reg(2, 'cs', cs))
+        old_cs = LLIL_TEMP(il.temp_reg_count)
+        il.append(il.set_reg(2, old_cs, il.reg(2, 'cs')))
+        il.append(il.push(2, il.reg(2, 'cs')))
+        il.append(il.call_stack_adjust(self._lift_phys_addr(il, cs, ip), 2))
+        il.append(il.set_reg(2, 'cs', il.reg(2, old_cs)))
+
+
 class CallNearImm(Call):
     def length(self):
         return 3
@@ -83,3 +115,21 @@ class CallNearImm(Call):
 
     def lift(self, il, addr):
         il.append(il.call(il.const(3, self.ip)))
+
+
+class CallNearRM(InstrHasModRegRM, Instr16Bit, Call):
+    def _default_segment(self):
+        return 'cs'
+
+    def analyze(self, info, addr):
+        Call.analyze(self, info, addr)
+        # FIXME: what should we do for indirect calls?
+        # info.add_branch(BranchType.CallDestination)
+
+    def render(self, addr):
+        tokens = Call.render(self, addr)
+        tokens += self._render_reg_mem()
+        return tokens
+
+    def lift(self, il, addr):
+        il.append(il.call(self._lift_phys_addr(il, self.segment(), self._lift_reg_mem(il))))
