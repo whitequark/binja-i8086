@@ -5,32 +5,56 @@ from ..tables import *
 from . import *
 
 
-__all__ = ['RetNear', 'RetNearImm']
+__all__ = ['RetNear', 'RetNearImm', 'RetFar', 'RetFarImm']
 
 
-class RetNear(Instruction):
+class Ret(Instruction):
     def name(self):
-        return 'ret'
+        if self.opcode & 0b1000:
+            return 'retf'
+        else:
+            return 'ret'
 
     def analyze(self, info, addr):
         Instruction.analyze(self, info, addr)
         info.add_branch(BranchType.FunctionReturn)
 
-    def lift(self, il, addr):
-        il.append(il.ret(il.pop(2)))
 
-
-class RetNearImm(InstrHasImm, RetNear):
+class RetImm(InstrHasImm, Ret):
     def width(self):
         return 2
 
     def render(self, addr):
-        tokens = RetNear.render(addr)
+        tokens = Ret.render(addr)
         tokens += [
             ('int', fmt_hex2(self.imm), self.imm),
         ]
         return tokens
 
+
+class RetFar(Ret):
     def lift(self, il, addr):
+        ip = il.pop(2)
+        cs = il.pop(2)
+        il.append(il.ret(self._lift_addr(il, cs, ip)))
+
+
+class RetFarImm(RetImm):
+    def lift(self, il, addr):
+        ip = il.pop(2)
+        cs = il.pop(2)
         il.append(il.set_reg(2, 'sp', il.add(2, il.reg(2, 'sp'), il.const(2, self.imm))))
-        il.append(il.ret(il.pop(2)))
+        il.append(il.ret(self._lift_addr(il, cs, ip)))
+
+
+class RetNear(Ret):
+    def lift(self, il, addr):
+        ip = il.pop(2)
+        il.append(il.ret(ip))
+
+
+class RetNearImm(RetImm):
+    def lift(self, il, addr):
+        ip = il.pop(2)
+        il.append(il.set_reg(2, 'sp', il.add(2, il.reg(2, 'sp'), il.const(2, self.imm))))
+        il.append(il.ret(ip))
