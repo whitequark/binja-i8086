@@ -154,8 +154,8 @@ Instruction.opcodes.update({
     0x81: AluLogicRMImm,
     0x82: AluLogicRMImm,
     0x83: AluLogicRMImm,
-    # 0x84: TestRMReg,
-    # 0x85: TestRMReg,
+    0x84: TestRMReg,
+    0x85: TestRMReg,
     0x86: XchgRegRM,
     0x87: XchgRegRM,
     0x88: MovRMReg,
@@ -269,7 +269,7 @@ Instruction.opcodes.update({
     # 0xf4: Hlt,
     0xf5: Cmc,
     0xf6: {
-        0b000: TestRegMemImm,
+        0b000: TestRMImm,
         0b001: UnassignedRM,
         0b010: AluArithRegMem,
         0b011: AluArithRegMem,
@@ -279,7 +279,7 @@ Instruction.opcodes.update({
         0b111: AluArithRegMem,
     },
     0xf7: {
-        0b000: TestRegMemImm,
+        0b000: TestRMImm,
         0b001: UnassignedRM,
         0b010: AluArithRegMem,
         0b011: AluArithRegMem,

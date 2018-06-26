@@ -3,7 +3,7 @@ from ..tables import *
 from . import *
 
 
-__all__ = ['TestAccImm', 'TestRegMemImm']
+__all__ = ['TestAccImm', 'TestRMImm', 'TestRMReg']
 
 
 class Test(Instruction):
@@ -29,7 +29,7 @@ class TestAccImm(InstrHasImm, InstrHasWidth, Test):
         il.append(il.and_expr(w, il.reg(w, self.reg()), il.const(w, self.imm), '*'))
 
 
-class TestRegMemImm(InstrHasImm, InstrHasModRegRM, InstrHasWidth, Test):
+class TestRMImm(InstrHasImm, InstrHasModRegRM, InstrHasWidth, Test):
     def render(self, addr):
         tokens = Instruction.render(self, addr)
         tokens += self._render_reg_mem()
@@ -41,4 +41,19 @@ class TestRegMemImm(InstrHasImm, InstrHasModRegRM, InstrHasWidth, Test):
 
     def lift(self, il, addr):
         w = self.width()
-        il.append(il.add(w, self._lift_reg_mem(il), il.const(w, self.imm), '*'))
+        il.append(il.and_expr(w, self._lift_reg_mem(il), il.const(w, self.imm), '*'))
+
+
+class TestRMReg(InstrHasModRegRM, InstrHasWidth, Test):
+    def render(self, addr):
+        tokens = Instruction.render(self, addr)
+        tokens += self._render_reg_mem()
+        tokens += asm(
+            ('opsep', ', '),
+            ('reg', self._reg()),
+        )
+        return tokens
+
+    def lift(self, il, addr):
+        w = self.width()
+        il.append(il.and_expr(w, self._lift_reg_mem(il), il.reg(w, self._reg()), '*'))
