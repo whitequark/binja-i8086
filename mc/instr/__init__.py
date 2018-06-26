@@ -230,6 +230,8 @@ class InstrHasModRegRM(InstrHasSegment):
             ]
         else:
             tokens = map(lambda reg: ('reg', reg), self._mem_regs())
+            if len(tokens) == 2:
+                tokens.insert(1, ('text', '+'))
             if self._mod_bits() != 0b00:
                 tokens += [
                     ('int', fmt_hex_sign(self.disp), self.disp)
