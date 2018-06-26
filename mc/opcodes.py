@@ -6,6 +6,7 @@ from .instr.xchg import *
 from .instr.test import *
 from .instr.mov import *
 from .instr.lea import *
+from .instr.cbwd import *
 from .instr.push_pop import *
 from .instr.rep import *
 from .instr.str import *
@@ -174,8 +175,8 @@ Instruction.opcodes.update({
     0x95: XchgRegReg,
     0x96: XchgRegReg,
     0x97: XchgRegReg,
-    # 0x98: Cbw,
-    # 0x99: Cwd,
+    0x98: Cbw,
+    0x99: Cwd,
     0x9a: CallFarImm,
     # 0x9b: Wait,
     # 0x9c: Pushf,
