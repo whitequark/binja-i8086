@@ -10,11 +10,13 @@ __all__ = ['Movs', 'Cmps', 'Stos', 'Lods', 'Scas']
 
 
 class InstrString(InstrHasWidth, Instruction):
+    default_segment = 'ds'
+
     def name(self):
         if self.width() == 2:
-            return self.base_name + 'b'
-        else:
             return self.base_name + 'w'
+        else:
+            return self.base_name + 'b'
 
     def _lift_inc_dec(self, il, regs, df_values):
         if not isinstance(regs, tuple):
@@ -42,22 +44,22 @@ class InstrString(InstrHasWidth, Instruction):
             il.mark_label(post_label)
 
 
-class Movs(InstrString):
+class Movs(InstrHasSegment, InstrString):
     base_name = 'movs'
 
     def lift(self, il, addr, df_values=None):
         w = self.width()
-        value = il.load(w, self._lift_addr(il, 'es', 'si'))
+        value = il.load(w, self._lift_addr(il, self.segment(), 'si'))
         il.append(il.store(w, self._lift_addr(il, 'es', 'di'), value))
         self._lift_inc_dec(il, ('si', 'di'), df_values)
 
 
-class Cmps(InstrString):
+class Cmps(InstrHasSegment, InstrString):
     base_name = 'cmps'
 
     def lift(self, il, addr, df_values=None):
         w = self.width()
-        il.append(il.sub(w, il.load(w, self._lift_addr(il, 'es', 'si')),
+        il.append(il.sub(w, il.load(w, self._lift_addr(il, self.segment(), 'si')),
                             il.load(w, self._lift_addr(il, 'es', 'di')), '*'))
         self._lift_inc_dec(il, ('si', 'di'), df_values)
 
@@ -71,12 +73,12 @@ class Stos(InstrString):
         self._lift_inc_dec(il, 'di', df_values)
 
 
-class Lods(InstrString):
+class Lods(InstrHasSegment, InstrString):
     base_name = 'lods'
 
     def lift(self, il, addr, df_values=None):
         w = self.width()
-        il.append(il.set_reg(w, 'ax', il.load(w, self._lift_addr(il, 'es', 'si'))))
+        il.append(il.set_reg(w, 'ax', il.load(w, self._lift_addr(il, self.segment(), 'si'))))
         self._lift_inc_dec(il, 'si', df_values)
 
 
