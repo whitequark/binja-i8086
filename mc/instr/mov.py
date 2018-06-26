@@ -146,7 +146,7 @@ class MovRMSeg(InstrHasModRM, Instr16Bit, Mov):
 
     def render(self, addr):
         if self._reg_bits() & 0b100:
-            return asm(('instr', 'invalid'))
+            return asm(('instr', '(unassigned)'))
 
         tokens = Mov.render(self, addr)
         tokens += self._render_reg_mem(fixed_width=True)
@@ -170,7 +170,7 @@ class MovSegRM(InstrHasModRM, Instr16Bit, Mov):
 
     def render(self, addr):
         if self._reg_bits() & 0b100:
-            return asm(('instr', 'invalid'))
+            return asm(('instr', '(unassigned)'))
 
         tokens = Mov.render(self, addr)
         tokens += asm(

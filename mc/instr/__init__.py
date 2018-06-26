@@ -119,11 +119,11 @@ class InstrHasImm(object):
 
 
 class InstrHasSegment(object):
-    segmentOverride = None
+    segment_override = None
 
     def segment(self):
-        if self.segmentOverride:
-            return self.segmentOverride
+        if self.segment_override:
+            return self.segment_override
         else:
             return self.default_segment
 

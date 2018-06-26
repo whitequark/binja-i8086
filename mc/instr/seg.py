@@ -12,11 +12,11 @@ class Segment(Prefix):
 
     def decode(self, decoder, addr):
         Prefix.decode(self, decoder, addr)
-        if hasattr(self.next, 'segmentOverride'):
-            self.next.segmentOverride = self.reg_seg()
+        if hasattr(self.next, 'segment_override'):
+            self.next.segment_override = self.reg_seg()
 
     def render(self, addr):
-        if hasattr(self.next, 'segmentOverride'):
+        if hasattr(self.next, 'segment_override'):
             tokens = []
         else:
             tokens = asm(

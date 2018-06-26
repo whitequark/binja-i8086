@@ -165,7 +165,7 @@ Instruction.opcodes.update({
     0x8c: MovRMSeg,
     0x8d: Lea,
     0x8e: MovSegRM,
-    # 0x8f: PopRM,
+    0x8f: PopRM,
     0x90: Nop,
     0x91: Xchg,
     0x92: Xchg,
@@ -311,6 +311,7 @@ Instruction.opcodes.update({
         # 0b011: CallFarMem,
         0b100: JmpNearRM,
         0b101: JmpFarMem,
+        0b110: PushRM,
         0b111: UnassignedRM,
     }
 })

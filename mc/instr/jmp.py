@@ -59,7 +59,7 @@ class JmpFarMem(InstrHasModRM, Instr16Bit, Jmp):
 
     def render(self, addr):
         if self._mod_bits() == 0b11:
-            return asm(('instr', 'illegal'))
+            return asm(('instr', '(unassigned)'))
 
         tokens = Jmp.render(self, addr)
         tokens += asm(
