@@ -14,10 +14,12 @@ def decode(data, addr):
         instr = Instruction(decoder)
         instr.decode(decoder, addr)
         return instr
-    except (KeyError, coding.BufferTooShort):
-        log.log_warn('At address {:05x}:'.format(addr))
-        log.log_warn('Error decoding {}'.format(data.encode('hex')))
+    except KeyError:
+        log.log_warn('At address {:05x}: unknown encoding {}'
+                     .format(addr, data.encode('hex')))
+    except coding.BufferTooShort:
         pass
+
 
 def encode(instr, addr):
     encoder = Encoder()
