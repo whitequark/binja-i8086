@@ -94,10 +94,9 @@ class JmpNearImm(Jmp):
         info.add_branch(BranchType.UnconditionalBranch, self.ip)
 
     def render(self, addr):
-        ip_rel = self.ip - addr
         tokens = Jmp.render(self, addr)
         tokens += asm(
-            ('codeRelAddr', fmt_code_rel(ip_rel), ip_rel),
+            ('codeRelAddr', fmt_code_rel(self.ip - addr), self.ip),
         )
         return tokens
 
@@ -120,9 +119,7 @@ class JmpNearRM(InstrHasModRM, Instr16Bit, Jmp):
         return tokens
 
     def lift(self, il, addr):
-        eff_addr = il.shift_left(3, il.reg(2, 'cs'), il.const(1, 4))
-        eff_addr = il.add(3, eff_addr, self._lift_reg_mem(il))
-        il.append(il.jump(eff_addr))
+        il.append(il.jump(self._lift_addr(il, 'cs', self._lift_reg_mem(il))))
 
 
 class JmpShort(Jmp):
@@ -142,10 +139,9 @@ class JmpShort(Jmp):
         info.add_branch(BranchType.UnconditionalBranch, self.ip)
 
     def render(self, addr):
-        ip_rel = self.ip - addr
         tokens = Jmp.render(self, addr)
         tokens += asm(
-            ('codeRelAddr', fmt_code_rel(ip_rel), ip_rel),
+            ('codeRelAddr', fmt_code_rel(self.ip - addr), self.ip),
         )
         return tokens
 
