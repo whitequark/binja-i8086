@@ -8,7 +8,8 @@ __all__ = ['MovRegImm', 'MovMemImm',
            'MovAccMem', 'MovMemAcc',
            'MovRMSeg',  'MovSegRM',
            'LSegRegRM',
-           'Xlat']
+           'Xlat',
+           'SahF', 'LahF']
 
 
 class Mov(Instruction):
@@ -233,3 +234,29 @@ class Xlat(InstrHasSegment, Instruction):
         off  = il.add(2, il.reg(2, 'bx'), il.reg(1, 'al'))
         phys = self._lift_phys_addr(il, self.segment(), off)
         il.append(il.set_reg(1, 'al', il.load(1, phys)))
+
+
+class LahF(Instruction):
+    def name(self):
+        return 'lahf'
+
+    def lift(self, il, addr):
+        flags = il.const(1, 0b10)
+        for flag, flag_bit in flags_bits:
+            if flag_bit > 7:
+                break
+            bit = il.flag_bit(1, flag, flag_bit)
+            flags = il.or_expr(1, bit, flags)
+        il.append(il.set_reg(1, 'ah', flags))
+
+
+class SahF(Instruction):
+    def name(self):
+        return 'sahf'
+
+    def lift(self, il, addr):
+        for flag, flag_bit in flags_bits:
+            if flag_bit > 7:
+                break
+            bit = il.test_bit(1, il.reg(1, 'ah'), il.const(1, flag_bit))
+            il.append(il.set_flag(flag, bit))
