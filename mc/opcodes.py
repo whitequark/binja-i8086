@@ -16,6 +16,7 @@ from .instr.ret import *
 from .instr.int import *
 from .instr.cl_st import *
 from .instr.in_out import *
+from .instr.misc import *
 from .instr.bad import *
 
 
@@ -178,7 +179,7 @@ Instruction.opcodes.update({
     0x98: Cbw,
     0x99: Cwd,
     0x9a: CallFarImm,
-    # 0x9b: Wait,
+    0x9b: Wait,
     # 0x9c: Pushf,
     # 0x9d: Popf,
     # 0x9e: Sahf,
@@ -263,11 +264,11 @@ Instruction.opcodes.update({
     0xed: InReg,
     0xee: OutReg,
     0xef: OutReg,
-    # 0xf0: Lock,
+    0xf0: Lock,
     0xf1: Unassigned,
     0xf2: Repne,
     0xf3: Repe,
-    # 0xf4: Hlt,
+    0xf4: Hlt,
     0xf5: Cmc,
     0xf6: {
         0b000: TestRMImm,
