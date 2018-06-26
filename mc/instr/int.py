@@ -32,10 +32,10 @@ class Int(Instruction):
             # to the vector.
             # Not quite semantically correct, but good enough and useful.
             # TODO: represent this as a system call
-            int_cs_ip = il.load(4, il.const_pointer(2, self.number * 4))
-            int_cs    = il.logical_shift_right(2, int_cs_ip, il.const(1, 8))
-            int_ip    = il.low_part(2, int_cs_ip)
-            il.append(il.call(self._lift_addr(il, int_cs, int_ip)))
+            cs_ip = il.load(4, il.const_pointer(2, self.number * 4))
+            cs    = il.logical_shift_right(2, cs_ip, il.const(1, 16))
+            ip    = il.low_part(2, cs_ip)
+            il.append(il.call(self._lift_addr(il, cs, ip)))
 
 class Int3(Int):
     number = 3
