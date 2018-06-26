@@ -125,8 +125,10 @@ class InstrHasSegment(object):
         if self.segment_override:
             return self.segment_override
         else:
-            return self.default_segment
+            return self._default_segment()
 
+    def _default_segment(self):
+        return 'ds'
 
 class InstrHasDisp(InstrHasSegment):
     def length(self):
@@ -144,7 +146,7 @@ class InstrHasDisp(InstrHasSegment):
         tokens = asm(
             ('beginMem', '[')
         )
-        if self.segment() != self.default_segment:
+        if self.segment() != self._default_segment():
             tokens += asm(
                 ('reg', self.segment()),
                 ('opsep', ':')
@@ -180,6 +182,12 @@ class InstrHasModRegRM(InstrHasSegment):
         super(InstrHasModRegRM, self).encode(encoder, addr)
         encoder.unsigned_byte(self._mod_reg_rm)
         encoder.displacement(self.disp, self._disp_length())
+
+    def _default_segment(self):
+        if self._mod_bits() != 0b11 and 'bp' in self._mem_regs():
+            return 'ss'
+        else:
+            return 'ds'
 
     def _mod_bits(self):
         return self._mod_reg_rm >> 6
@@ -224,7 +232,7 @@ class InstrHasModRegRM(InstrHasSegment):
                 tokens += [
                     ('int', fmt_hex_sign(self.disp), self.disp)
                 ]
-        if self.segment() != self.default_segment:
+        if self.segment() != self._default_segment():
             tokens = [
                 ('reg', self.segment()),
                 ('opsep', ':')

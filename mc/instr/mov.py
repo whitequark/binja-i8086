@@ -8,8 +8,6 @@ __all__ = ['MovRegImm', 'MovMemImm', 'MovRMReg', 'MovRegRM',
 
 
 class Mov(Instruction):
-    default_segment = 'ds'
-
     def name(self):
         return 'mov'
 

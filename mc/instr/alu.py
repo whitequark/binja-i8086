@@ -9,8 +9,6 @@ __all__ = ['AluLogicRegRM', 'AluLogicAccImm', 'AluLogicRMImm',
 
 
 class AluLogic(InstrHasWidth, Instruction):
-    default_segment = 'ds'
-
     def name(self):
         return instr_alu_logic[(self.opcode & 0b111000) >> 3]
 
@@ -128,8 +126,6 @@ class AluLogicRMImm(InstrHasModRegRM, AluLogic):
 
 
 class AluShiftRM(InstrHasModRegRM, InstrHasWidth, Instruction):
-    default_segment = 'ds'
-
     def name(self):
         return instr_alu_shift[self._reg_bits()]
 
@@ -181,8 +177,6 @@ class AluShiftRM(InstrHasModRegRM, InstrHasWidth, Instruction):
 
 
 class AluArithRegMem(InstrHasModRegRM, InstrHasWidth, Instruction):
-    default_segment = 'ds'
-
     def name(self):
         return instr_alu_arith[self._reg_bits()]
 

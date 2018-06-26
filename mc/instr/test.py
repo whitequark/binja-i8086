@@ -30,8 +30,6 @@ class TestAccImm(InstrHasImm, InstrHasWidth, Test):
 
 
 class TestRegMemImm(InstrHasImm, InstrHasModRegRM, InstrHasWidth, Test):
-    default_segment = 'ds'
-
     def render(self, addr):
         tokens = Instruction.render(self, addr)
         tokens += self._render_reg_mem()

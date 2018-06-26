@@ -7,8 +7,6 @@ __all__ = ['Lea']
 
 
 class Lea(InstrHasModRegRM, Instr16Bit, Instruction):
-    default_segment = 'ds'
-
     def name(self):
         return 'lea'
 

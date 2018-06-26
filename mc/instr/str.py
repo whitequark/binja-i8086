@@ -10,8 +10,6 @@ __all__ = ['Movs', 'Cmps', 'Stos', 'Lods', 'Scas']
 
 
 class InstrString(InstrHasWidth, Instruction):
-    default_segment = 'ds'
-
     def name(self):
         if self.width() == 2:
             return self.base_name + 'w'

@@ -50,8 +50,6 @@ class PopSeg(PushPopSeg, PopReg):
 
 
 class PushRM(InstrHasModRegRM, Instr16Bit, Instruction):
-    default_segment = 'ds'
-
     def name(self):
         return 'push'
 
@@ -65,8 +63,6 @@ class PushRM(InstrHasModRegRM, Instr16Bit, Instruction):
 
 
 class PopRM(InstrHasModRegRM, Instr16Bit, Instruction):
-    default_segment = 'ds'
-
     def name(self):
         return 'pop'
 
