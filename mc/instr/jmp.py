@@ -225,12 +225,12 @@ class Loop(JmpCond):
 
 class Loope(Loop):
     def _lift_loop_pred(self, il):
-        return il.flag('e')
+        return il.flag('z')
 
 
 class Loopne(Loop):
     def _lift_loop_pred(self, il):
-        return il.not_expr(il.flag('e'))
+        return il.not_expr(1, il.flag('z'))
 
 
 class Jcxz(Loop):

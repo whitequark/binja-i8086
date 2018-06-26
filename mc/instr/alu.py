@@ -161,17 +161,17 @@ class AluShiftRM(InstrHasModRegRM, InstrHasWidth, Instruction):
 
         name = self.name()
         if name == 'rol':
-            result = il.rotate_left(w, lhs, rhs, '*')
+            result = il.rotate_left(w, lhs, rhs, 'co')
         elif name == 'ror':
-            result = il.rotate_right(w, lhs, rhs, '*')
+            result = il.rotate_right(w, lhs, rhs, 'co')
         elif name == 'rcl':
-            result = il.rotate_left_carry(w, lhs, rhs, il.flag('c'), '*')
+            result = il.rotate_left_carry(w, lhs, rhs, il.flag('c'), 'co')
         elif name == 'rcr':
-            result = il.rotate_right_carry(w, lhs, rhs, il.flag('c'), '*')
+            result = il.rotate_right_carry(w, lhs, rhs, il.flag('c'), 'co')
         elif name == 'shl':
-            result = il.shift_left(w, lhs, rhs, '*')
+            result = il.shift_left(w, lhs, rhs, 'co')
         elif name == 'shr':
-            result = il.logical_shift_right(w, lhs, rhs, '*')
+            result = il.logical_shift_right(w, lhs, rhs, 'co')
         elif name == 'sar':
             result = il.arith_shift_right(w, lhs, rhs, '*')
         else:
