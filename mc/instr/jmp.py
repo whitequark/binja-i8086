@@ -109,6 +109,9 @@ class JmpNearImm(Jmp):
 
 
 class JmpNearRM(InstrHasModRegRM, Instr16Bit, Jmp):
+    def _default_segment(self):
+        return 'cs'
+
     def analyze(self, info, addr):
         Jmp.analyze(self, info, addr)
         info.add_branch(BranchType.IndirectBranch)
@@ -119,7 +122,7 @@ class JmpNearRM(InstrHasModRegRM, Instr16Bit, Jmp):
         return tokens
 
     def lift(self, il, addr):
-        il.append(il.jump(self._lift_addr(il, 'cs', self._lift_reg_mem(il))))
+        il.append(il.jump(self._lift_addr(il, self.segment(), self._lift_reg_mem(il))))
 
 
 class JmpShort(Jmp):
