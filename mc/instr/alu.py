@@ -213,9 +213,28 @@ class AluArithRegMem(InstrHasModRegRM, InstrHasWidth, Instruction):
             il.append(self._lift_reg_mem(il, store=il.not_expr(w, self._lift_reg_mem(il))))
         elif name == 'neg':
             il.append(self._lift_reg_mem(il, store=il.neg_expr(w, self._lift_reg_mem(il))))
-        # elif name == 'mul':
-        # elif name =='imul':
-        # elif name == 'div':
-        # elif name == 'idiv':
+        elif name in ('mul', 'imul'):
+            accum  = il.reg(w, 'ax') if w == 2 else il.reg(w, 'al')
+            # TODO: there's only one mult in LLIL, what gives?
+            result = il.mult(w * 2, accum, self._lift_reg_mem(il))
+            if w == 2:
+                il.append(il.set_reg_split(w * 2, 'dx', 'ax', result))
+            else:
+                il.append(il.set_reg(w, 'ax', result))
+        elif name in ('div', 'idiv'):
+            dividend = il.reg_split(w * 2, 'dx', 'ax') if w == 2 else il.reg(w * 2, 'ax')
+            divisor  = self._lift_reg_mem(il)
+            if name == 'div':
+                quotinent = il.div_unsigned(w, dividend, divisor)
+                remainder = il.mod_unsigned(w, dividend, divisor)
+            else:
+                quotinent = il.div_signed(w, dividend, divisor)
+                remainder = il.mod_signed(w, dividend, divisor)
+            if w == 2:
+                il.append(il.set_reg(w, 'ax', quotinent))
+                il.append(il.set_reg(w, 'dx', remainder))
+            else:
+                il.append(il.set_reg(w, 'al', quotinent))
+                il.append(il.set_reg(w, 'ah', remainder))
         else:
             il.append(il.undefined())

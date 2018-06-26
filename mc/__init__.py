@@ -15,6 +15,7 @@ def decode(data, addr):
         instr.decode(decoder, addr)
         return instr
     except (KeyError, coding.BufferTooShort):
+        log.log_warn('At address {:05x}:'.format(addr))
         log.log_warn('Error decoding {}'.format(data.encode('hex')))
         pass
 
