@@ -35,8 +35,7 @@ class Int(Instruction):
             int_cs_ip = il.load(4, il.const_pointer(2, self.number * 4))
             int_cs    = il.logical_shift_right(2, int_cs_ip, il.const(1, 8))
             int_ip    = il.low_part(2, int_cs_ip)
-            phys_addr = il.add(3, il.shift_left(3, int_cs, il.const(1, 4)), int_ip)
-            il.append(il.call(phys_addr))
+            il.append(il.call(self._lift_addr(il, int_cs, int_ip)))
 
 class Int3(Int):
     number = 3

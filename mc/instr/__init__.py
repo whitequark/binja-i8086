@@ -56,7 +56,10 @@ class Instruction(object):
         if disp in il.arch.regs:
             disp = il.reg(2, disp)
         base = il.shift_left(3, seg, il.const(1, 4))
-        return il.add(3, base, disp)
+        phys = il.add(3, base, disp)
+        if a20_gate:
+            phys = il.and_expr(3, il.const(3, 0xfffff), phys)
+        return phys
 
 
 class Prefix(Instruction):
@@ -159,14 +162,11 @@ class InstrHasDisp(InstrHasSegment):
 
     def _lift_mem(self, il, store=None):
         w = self.width()
-        phys_addr = il.add(3, il.shift_left(3, il.reg(2, self.segment()), il.const(1, 4)),
-                           il.const(2, self.disp))
-        if a20_gate:
-            phys_addr = il.and_expr(3, il.const(3, 0xfffff), phys_addr)
+        phys = self._lift_addr(il, self.segment(), il.const(2, self.disp))
         if store is None:
-            return il.load(w, phys_addr)
+            return il.load(w, phys)
         else:
-            return il.store(w, phys_addr, store)
+            return il.store(w, phys, store)
 
 
 class InstrHasModRegRM(InstrHasSegment):
@@ -263,19 +263,16 @@ class InstrHasModRegRM(InstrHasSegment):
             else:
                 return il.set_reg(self.width(), self._reg2(), store)
         elif self._mod_bits() == 0b00 and self._reg_mem_bits() == 0b110:
-            eff_addr = il.const(2, self.disp & 0xffff)
+            offset = il.const(2, self.disp & 0xffff)
         else:
             offsets = map(lambda reg: il.reg(2, reg), self._mem_regs())
             if self._mod_bits() != 0b00:
                 offsets.append(il.const(2, self.disp))
-            eff_addr = reduce(lambda expr, reg: il.add(2, expr, reg), offsets)
+            offset = reduce(lambda expr, reg: il.add(2, expr, reg), offsets)
         if only_calc_addr:
-            return eff_addr
-
-        phys_addr = il.add(3, il.shift_left(3, il.reg(2, self.segment()), il.const(1, 4)), eff_addr)
-        if a20_gate:
-            phys_addr = il.and_expr(3, il.const(3, 0xfffff), phys_addr)
+            return offset
+        phys = self._lift_addr(il, self.segment(), offset)
         if store is None:
-            return il.load(self.width(), phys_addr)
+            return il.load(self.width(), phys)
         else:
-            return il.store(self.width(), phys_addr, store)
+            return il.store(self.width(), phys, store)
