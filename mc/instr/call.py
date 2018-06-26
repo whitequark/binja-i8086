@@ -80,7 +80,7 @@ class CallFarMem(InstrHasModRegRM, Instr16Bit, Call):
             il.append(il.undefined())
             return
 
-        cs, ip = self._lift_load_cs_ip(il, self._lift_reg_mem(il))
+        cs, ip = self._lift_load_far(il, self._lift_reg_mem(il))
         il.append(il.set_reg(2, 'cs', cs))
         old_cs = LLIL_TEMP(il.temp_reg_count)
         il.append(il.set_reg(2, old_cs, il.reg(2, 'cs')))

@@ -74,7 +74,7 @@ class JmpFarMem(InstrHasModRegRM, Instr16Bit, Jmp):
             il.append(il.undefined())
             return
 
-        cs, ip = self._lift_load_cs_ip(il, self._lift_reg_mem(il))
+        cs, ip = self._lift_load_far(il, self._lift_reg_mem(il))
         il.append(il.set_reg(2, 'cs', cs))
         il.append(il.jump(self._lift_phys_addr(il, cs, ip)))
 

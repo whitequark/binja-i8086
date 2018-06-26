@@ -63,14 +63,15 @@ class Instruction(object):
             phys = il.and_expr(3, il.const(3, 0xfffff), phys)
         return phys
 
-    def _lift_load_cs_ip(self, il, addr):
-        cs_ip  = LLIL_TEMP(il.temp_reg_count)
-        il.append(il.set_reg(4, cs_ip, il.load(4, addr)))
-        cs     = LLIL_TEMP(il.temp_reg_count)
-        il.append(il.set_reg(2, cs, il.logical_shift_right(2, il.reg(4, cs_ip), il.const(1, 16))))
-        ip     = LLIL_TEMP(il.temp_reg_count)
-        il.append(il.set_reg(2, ip, il.low_part(2, il.reg(4, cs_ip))))
-        return il.reg(2, cs), il.reg(2, ip)
+    def _lift_load_far(self, il, addr):
+        seg_off = LLIL_TEMP(il.temp_reg_count)
+        il.append(il.set_reg(4, seg_off, il.load(4, addr)))
+        seg     = LLIL_TEMP(il.temp_reg_count)
+        il.append(il.set_reg(2, seg, il.logical_shift_right(2, il.reg(4, seg_off),
+                                                            il.const(1, 16))))
+        off     = LLIL_TEMP(il.temp_reg_count)
+        il.append(il.set_reg(2, off, il.low_part(2, il.reg(4, seg_off))))
+        return il.reg(2, seg), il.reg(2, off)
 
 
 class Prefix(Instruction):

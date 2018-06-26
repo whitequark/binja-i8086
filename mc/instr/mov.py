@@ -3,8 +3,11 @@ from ..tables import *
 from . import *
 
 
-__all__ = ['MovRegImm', 'MovMemImm', 'MovRMReg', 'MovRegRM',
-           'MovAccMem', 'MovMemAcc', 'MovRMSeg', 'MovSegRM']
+__all__ = ['MovRegImm', 'MovMemImm',
+           'MovRMReg',  'MovRegRM',
+           'MovAccMem', 'MovMemAcc',
+           'MovRMSeg',  'MovSegRM',
+           'LSegRegRM']
 
 
 class Mov(Instruction):
@@ -184,3 +187,38 @@ class MovSegRM(InstrHasModRegRM, Instr16Bit, Mov):
             return
 
         il.append(il.set_reg(2, self.dst_reg(), self._lift_reg_mem(il)))
+
+
+class LSegRegRM(InstrHasModRegRM, Instr16Bit, Instruction):
+    def name(self):
+        return 'l' + self.seg_reg()
+
+    def seg_reg(self):
+        if self.opcode & 0b1:
+            return 'ds'
+        else:
+            return 'es'
+
+    def dst_reg(self):
+        return self._reg()
+
+    def render(self, addr):
+        if self._mod_bits() == 0b11:
+            return asm(('instr', '(unassigned)'))
+
+        tokens = Instruction.render(self, addr)
+        tokens += asm(
+            ('reg', self.dst_reg()),
+            ('opsep', ', '),
+        )
+        tokens += self._render_reg_mem(fixed_width=True)
+        return tokens
+
+    def lift(self, il, addr):
+        if self._mod_bits() == 0b11:
+            il.append(il.undefined())
+            return
+
+        seg, off = self._lift_load_far(il, self._lift_reg_mem(il))
+        il.append(il.set_reg(2, self.seg_reg(), seg))
+        il.append(il.set_reg(2, self.dst_reg(), off))

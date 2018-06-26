@@ -23,7 +23,7 @@ class Int(Instruction):
             # to the vector.
             # Not quite semantically correct, but good enough and useful.
             # TODO: represent this as a system call
-            cs, ip = self._lift_load_cs_ip(il, il.const_pointer(2, self.number * 4))
+            cs, ip = self._lift_load_far(il, il.const_pointer(2, self.number * 4))
             il.append(il.call(self._lift_phys_addr(il, cs, ip)))
 
 
