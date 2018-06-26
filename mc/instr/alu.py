@@ -3,7 +3,8 @@ from ..tables import *
 from . import *
 
 
-__all__ = ['AluLogicRegRM', 'AluLogicAccImm', 'AluLogicRMImm',
+__all__ = ['AluLogicRegRM',  'AluLogicRMReg',
+           'AluLogicAccImm', 'AluLogicRMImm',
            'AluShiftRM',
            'AluArithRegMem']
 
@@ -31,6 +32,26 @@ class AluLogic(InstrHasWidth, Instruction):
             il.append(il.sub(self.width(), lhs, rhs, '*'))
             return
         return result
+
+
+class AluLogicRMReg(InstrHasModRegRM, AluLogic):
+    def src_reg(self):
+        return self._reg()
+
+    def render(self, addr):
+        tokens = AluLogic.render(self, addr)
+        tokens += self._render_reg_mem()
+        tokens += asm(
+            ('opsep', ', '),
+            ('reg', self.src_reg()),
+        )
+        return tokens
+
+    def lift(self, il, addr):
+        w = self.width()
+        result = self._op(il, self._lift_reg_mem(il), il.reg(w, self.src_reg()))
+        if result:
+            il.append(self._lift_reg_mem(il, store=result))
 
 
 class AluLogicRegRM(InstrHasModRegRM, AluLogic):
