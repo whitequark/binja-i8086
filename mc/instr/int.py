@@ -45,7 +45,7 @@ class IntImm(Int):
     def render(self, addr):
         tokens = Instruction.render(self, addr)
         tokens += asm(
-            ('int', fmt_dec(self.number), self.number)
+            ('int', fmt_hex(self.number), self.number)
         )
         return tokens
 
