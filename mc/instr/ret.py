@@ -29,7 +29,7 @@ class RetImm(InstrHasImm, Ret):
     def render(self, addr):
         tokens = Ret.render(addr)
         tokens += [
-            ('int', fmt_hex2(self.imm), self.imm),
+            ('int', fmt_imm(self.imm), self.imm),
         ]
         return tokens
 
