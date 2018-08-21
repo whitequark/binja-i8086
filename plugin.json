@@ -1,6 +1,6 @@
 {
   "plugin": {
-    "name": "Intel 8086 Bookmarks",
+    "name": "Intel 8086 Architecture",
     "version": "0.1",
     "author": "whitequark",
     "type": ["arch"],
