@@ -1,3 +1,4 @@
+from functools import reduce
 from binaryninja.lowlevelil import LLIL_TEMP
 
 from ..helpers import *

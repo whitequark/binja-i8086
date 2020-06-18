@@ -2,7 +2,7 @@
   "pluginmetadataversion" : 2,
   "name": "Intel 8086 Architecture",
   "type": ["arch"],
-  "api": ["python2", "python3"],
+  "api": ["python3"],
   "description": "A plugin providing the 16-bit Intel architecture.",
   "version": "0.1",
   "author": "whitequark",

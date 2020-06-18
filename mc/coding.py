@@ -16,7 +16,7 @@ class Decoder:
         if len(self.buf) - self.pos <= offset:
             raise BufferTooShort
 
-        return ord(self.buf[self.pos + offset])
+        return self.buf[self.pos + offset]
 
     def _unpack(self, fmt):
         size = struct.calcsize(fmt)
