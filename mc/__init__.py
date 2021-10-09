@@ -1,4 +1,4 @@
-from binaryninja import log
+from binaryninja.log import log_warn
 
 from .coding import *
 from .instr import Instruction
@@ -15,8 +15,8 @@ def decode(data, addr):
         instr.decode(decoder, addr)
         return instr
     except KeyError:
-        log.log_warn('At address {:05x}: unknown encoding {}'
-                     .format(addr, data.encode('hex')))
+        log_warn('At address {:05x}: unknown encoding {}'
+                 .format(addr, data.hex()))
     except coding.BufferTooShort:
         pass
 

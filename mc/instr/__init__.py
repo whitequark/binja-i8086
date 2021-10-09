@@ -242,7 +242,7 @@ class InstrHasModRegRM(InstrHasSegment):
                 ('int', fmt_disp(disp), disp)
             ]
         else:
-            tokens = map(lambda reg: ('reg', reg), self._mem_regs())
+            tokens = [('reg', reg) for reg in self._mem_regs()]
             if len(tokens) == 2:
                 tokens.insert(1, ('text', '+'))
             if self._mod_bits() != 0b00:
@@ -278,7 +278,7 @@ class InstrHasModRegRM(InstrHasSegment):
         elif self._mod_bits() == 0b00 and self._reg_mem_bits() == 0b110:
             offset = il.const(2, self.disp & 0xffff)
         else:
-            offsets = map(lambda reg: il.reg(2, reg), self._mem_regs())
+            offsets = [il.reg(2, reg) for reg in self._mem_regs()]
             if self._mod_bits() != 0b00:
                 offsets.append(il.const(2, self.disp))
             offset = reduce(lambda expr, reg: il.add(2, expr, reg), offsets)

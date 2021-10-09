@@ -1,6 +1,7 @@
-from binaryninja import log, Architecture, RegisterInfo, IntrinsicInfo, InstructionInfo
+from binaryninja import Architecture, RegisterInfo, IntrinsicInfo, InstructionInfo
 from binaryninja.enums import Endianness, FlagRole, LowLevelILFlagCondition
 from binaryninja.types import Type
+from binaryninja.log import log_error
 
 from . import mc
 
@@ -114,10 +115,10 @@ class Intel8086(Architecture):
             encoded = data[:decoded.total_length()]
             recoded = mc.encode(decoded, addr)
             if encoded != recoded:
-                log.log_error("Instruction roundtrip error")
-                log.log_error("".join([str(x) for x in decoded.render(addr)]))
-                log.log_error("Orig: {}".format(encoded.encode('hex')))
-                log.log_error("New:  {}".format(recoded.encode('hex')))
+                log_error("Instruction roundtrip error")
+                log_error("".join([str(x) for x in decoded.render(addr)]))
+                log_error("Orig: {}".format(encoded.hex()))
+                log_error("New:  {}".format(recoded.hex()))
 
             return decoded.render(addr), decoded.total_length()
 
